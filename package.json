@@ -1,0 +1,10 @@
+{
+  "name": "header-relay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:python": "python3 -m unittest discover -s test -p 'test_*.py' -v",
+    "test:all": "npm test && npm run test:python"
+  }
+}

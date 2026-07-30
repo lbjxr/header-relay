@@ -1,0 +1,87 @@
+{
+    "listen": {
+        "host": "127.0.0.1",
+        "port": 20130
+    },
+    "requestTimeoutMs": 120000,
+    "maxBodyBytes": 134217728,
+    "forward": {
+        "enabled": true,
+        "pathPrefix": "/forward",
+        "tokenFile": "YOUR_TOKEN_FILE_PATH",
+        "targetsFile": "/var/lib/header-relay/targets.json",
+        "profilesDir": "/opt/header-relay/profiles",
+        "maxBodyBytes": 134217728,
+        "maxBufferedRequests": 12,
+        "maxBufferedBytes": 402653184,
+        "upstreamHeaderTimeoutMs": 120000,
+        "streamIdleTimeoutMs": 180000
+    },
+    "sync": {
+        "dbPath": "YOUR_9ROUTER_DB_PATH",
+        "managedProxyPoolId": "YOUR_PROXY_POOL_ID",
+        "intervalSeconds": 60,
+        "excludeConnectionIds": [],
+        "targetOverrides": {}
+    },
+    "routes": [
+        {
+            "name": "hybgzs",
+            "prefix": "/hybgzs",
+            "target": "https://ai.hybgzs.com",
+            "setHeaders": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            },
+            "removeHeaders": []
+        },
+        {
+            "name": "muyuan",
+            "prefix": "/muyuan",
+            "target": "https://muyuan.do",
+            "setHeaders": {
+                "User-Agent": "GithubCopilot/1.155.0",
+                "Accept": "application/json",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Editor-Version": "vscode/1.88.0",
+                "Editor-Plugin-Version": "copilot/1.155.0"
+            },
+            "removeHeaders": [
+                "x-stainless-lang",
+                "x-stainless-package-version",
+                "x-stainless-os",
+                "x-stainless-arch",
+                "x-stainless-runtime",
+                "x-stainless-runtime-version",
+                "x-stainless-retry-count",
+                "x-stainless-timeout",
+                "x-stainless-async"
+            ]
+        },
+        {
+            "name": "hybgzsgemini",
+            "prefix": "/hybgemini",
+            "target": "https://ai.hybgzs.com",
+            "setHeaders": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            },
+            "removeHeaders": []
+        },
+        {
+            "name": "anyrouter",
+            "prefix": "/anyrouter",
+            "target": "https://anyrouter.top",
+            "setHeaders": {
+                "anthropic-beta": "context-1m-2025-08-07"
+            },
+            "removeHeaders": [],
+            "codexCompat": {
+                "enabled": true,
+                "instructionsFile": "/opt/header-relay/codex-instructions.txt",
+                "userAgent": "codex_cli_rs/0.136.0",
+                "originator": "codex_cli_rs",
+                "reasoningEffort": "low",
+                "verbosity": "low"
+            }
+        }
+    ]
+}

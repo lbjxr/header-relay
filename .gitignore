@@ -1,0 +1,26 @@
+# Runtime generated
+targets.json
+*.log
+*.pid
+
+# Backups
+config.json.bak*
+*.bak
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+
+# 9router local state
+/root/.9router/
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~

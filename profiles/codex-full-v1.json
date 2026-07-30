@@ -1,0 +1,15 @@
+{
+  "id": "codex-full-v1",
+  "family": "codex",
+  "clientVersion": "0.136.0",
+  "bodyMode": "codex-responses",
+  "instructionsFile": "../codex-instructions.txt",
+  "headers": {
+    "User-Agent": "codex_cli_rs/0.136.0",
+    "originator": "codex_cli_rs",
+    "Accept": "text/event-stream"
+  },
+  "sessionHeader": "session_id",
+  "reasoningEffort": "low",
+  "verbosity": "low"
+}

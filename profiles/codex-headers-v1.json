@@ -1,0 +1,12 @@
+{
+  "id": "codex-headers-v1",
+  "family": "codex",
+  "clientVersion": "0.136.0",
+  "bodyMode": "passthrough-buffered",
+  "headers": {
+    "User-Agent": "codex_cli_rs/0.136.0",
+    "originator": "codex_cli_rs"
+  },
+  "sessionHeader": "session_id",
+  "acceptFromStream": true
+}
