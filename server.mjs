@@ -7,6 +7,7 @@ import { normalizeCodexRequest } from './codex-compat.mjs';
 import { SnapshotStore } from './lib/config-snapshot.mjs';
 import { createForwardHandler } from './lib/forward-handler.mjs';
 import { sanitizeLogMessage } from './lib/header-utils.mjs';
+import { proxyFetch } from './lib/proxy-fetch.mjs';
 
 const DEFAULT_CONFIG_PATH = process.env.HEADER_RELAY_CONFIG || '/opt/header-relay/config.json';
 
@@ -86,6 +87,12 @@ async function handleLegacyRequest(req, res, snapshot, fetchImpl, logger) {
     let body = await readBody(req, snapshot.maxBodyBytes);
     let headers = copyRequestHeaders(req, target, route, requestId);
 
+    // 全局默认 User-Agent：仅当当前 headers 尚未显式设置 User-Agent 时生效
+    const globalUserAgent = snapshot.forward.defaultUserAgent;
+    if (globalUserAgent && !headers['user-agent'] && !headers['User-Agent']) {
+      headers['User-Agent'] = globalUserAgent;
+    }
+
     if (route._codexCompat && isResponsesTarget(target) && !['GET', 'HEAD'].includes(req.method || '')) {
       let parsed;
       try {
@@ -95,7 +102,11 @@ async function handleLegacyRequest(req, res, snapshot, fetchImpl, logger) {
         error.statusCode = 400;
         throw error;
       }
+      const globalDefaults = {
+        userAgent: snapshot.forward.defaultUserAgent || undefined,
+      };
       const normalized = normalizeCodexRequest(parsed, {
+        ...globalDefaults,
         ...route._codexCompat,
         headers,
         requestId
@@ -166,9 +177,14 @@ export function createRelayHandler({
   watchConfig = true
 } = {}) {
   const store = new SnapshotStore({ configPath, logger, watch: watchConfig });
+  const snapshot0 = store.getSnapshot();
+  const effectiveFetchImpl =
+    snapshot0.forward.httpProxy && snapshot0.forward.httpProxy.host
+      ? proxyFetch
+      : fetchImpl;
   const forwardHandler = createForwardHandler({
     getSnapshot: () => store.getSnapshot(),
-    fetchImpl,
+    fetchImpl: effectiveFetchImpl,
     logger
   });
 

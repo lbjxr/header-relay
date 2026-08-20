@@ -9,6 +9,8 @@
 - **客户端兼容**：内置 Codex / Claude 的 Header 兼容层，可自动标准化请求头与请求体。
 - **健康检查**：提供 `/health` 和 `/ready` 接口，便于服务发现和就绪探测。
 - **9router 同步**：通过 Python 同步脚本读取 9router 数据库，自动生成/更新 `targets.json` 与绑定关系。
+- **HTTP 代理出口**：支持通过 `forward.httpProxy` 配置上游代理，让转发流量通过指定出口 IP，避免直连暴露源站 IP。
+- **全局 User-Agent**：支持通过 `forward.defaultUserAgent` 设置全局默认 UA，未显式指定的请求自动带上指定 UA，也可在路由级覆盖。
 - **可观测性**：结构化 JSON 日志，输出请求 ID、目标规则、状态码与耗时。
 
 ## 术语说明
@@ -56,6 +58,12 @@ cp config.example.json config.json
 | `forward.maxBufferedBytes` | 缓冲总字节数上限 |
 | `forward.upstreamHeaderTimeoutMs` | 上游响应头超时时间 |
 | `forward.streamIdleTimeoutMs` | 流空闲超时时间 |
+| `forward.defaultUserAgent` | 全局默认 User-Agent。未显式指定 UA 的请求自动带上该值，可在路由级 `codexCompat.userAgent` 中覆盖 |
+| `forward.httpProxy.host` | 上游 HTTP 代理地址 |
+| `forward.httpProxy.port` | 上游 HTTP 代理端口 |
+| `forward.httpProxy.protocol` | 代理协议，`http` 或 `https`，默认 `http` |
+| `forward.httpProxy.username` | 代理认证用户名（可选） |
+| `forward.httpProxy.password` | 代理认证密码（可选） |
 | `sync.dbPath` | 9router SQLite 数据库路径 |
 | `sync.managedProxyPoolId` | 9router 托管的代理池 ID |
 | `sync.intervalSeconds` | 自动同步间隔（秒） |
@@ -182,6 +190,7 @@ header-relay/
     profile-registry.mjs     # Profiles 注册与匹配
     streaming.mjs            # 流式转发
     target-registry.mjs      # 目标规则校验与解析
+    proxy-fetch.mjs          # HTTP 代理 fetch 实现
   profiles/                  # Header 兼容模板
   scripts/                   # 9router 同步与迁移脚本
 ```
@@ -205,6 +214,7 @@ tail -f /var/log/header-relay/header-relay.log
 - `config.json` 包含敏感路径与 token，请勿提交到版本库。
 - 生产环境建议将 `listen.host` 绑定到内网地址或前级反向代理。
 - `forward.tokenFile` 对应的是 **Relay Token**（relay 服务的接入密码），不是中转站的 API Key。请设置权限 `600`。
+- `forward.httpProxy` 支持带认证的上游代理；若代理开启 `rejectUnauthorized: false`，请确保代理本身可信。
 - 如无需 Legacy 路由，可在 `config.json` 中移除以减少攻击面。
 
 ## License

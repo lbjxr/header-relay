@@ -15,7 +15,15 @@
         "maxBufferedRequests": 12,
         "maxBufferedBytes": 402653184,
         "upstreamHeaderTimeoutMs": 120000,
-        "streamIdleTimeoutMs": 180000
+        "streamIdleTimeoutMs": 180000,
+        "defaultUserAgent": "codex_cli_rs/0.136.0",
+        "httpProxy": {
+            "host": "127.0.0.1",
+            "port": 7890,
+            "protocol": "http",
+            "username": "",
+            "password": ""
+        }
     },
     "sync": {
         "dbPath": "YOUR_9ROUTER_DB_PATH",
