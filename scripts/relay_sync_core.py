@@ -286,7 +286,7 @@ def build_target_registry(plans, generated_at):
     return {
         'schemaVersion': 1,
         'generation': generation,
-        'generatedAt': generated_at,
+        'generatedAt': generation,
         'rules': rules,
     }
 
